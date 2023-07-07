@@ -117,3 +117,9 @@ class RecipieWrightSerializers(serializers.ModelSerializer):
             ingredients=ingredients)
         return recipe
 
+    # def update(self, instance, validated_data):
+    #     instance.tags = validated_data.get('tags', instance.tags)
+    #     instance.content = validated_data.get('content', instance.content)
+    #     instance.created = validated_data.get('created', instance.created)
+    #     instance.save()
+    #     return instance

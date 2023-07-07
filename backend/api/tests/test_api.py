@@ -1,12 +1,8 @@
-import json
-
 from django.contrib.auth.models import User
 from django.db.models import Count, Case, When, Avg
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from rest_framework.test import APIClient
-from rest_framework.test import RequestsClient
 from food.models import Tag, Ingredient, Recipe, IngredientAmount
 
 
@@ -23,7 +19,6 @@ class FoodApiTestCase(APITestCase):
             name='яйцо',
             measurement_unit='шт'
         )
-        # self.client = APIClient()
         recipe = Recipe.objects.create(
             author=self.user,
             name='Яичница',
@@ -70,3 +65,22 @@ class FoodApiTestCase(APITestCase):
         response_two = self.client.get(url_two)
         print(response_two.data)
         self.assertEquals(status.HTTP_200_OK, response_two.status_code)
+
+    def test_update(self):
+        url = reverse('api:recipes-detail', args='1')
+        data = {
+            'tags': [
+                1
+            ],
+            'ingredients': [
+                {
+                    'id': 1,
+                    'amount': 3
+                }
+            ],
+            'name': 'Яичница-2',
+            'text': 'Разбей яйца и пожарь.',
+            'cooking_time': 10
+        }
+        response = self.client.patch(url, data)
+        print(response.status_code)
