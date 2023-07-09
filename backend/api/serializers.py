@@ -8,11 +8,16 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from food.models import Tag, Ingredient, Recipe, IngredientAmount
+from users.models import Follow
+from rest_framework.exceptions import ValidationError
+from rest_framework import status
 
 User = get_user_model()
 
 
 class CustomUserSerializer(UserSerializer):
+    is_subscribed = SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -21,8 +26,55 @@ class CustomUserSerializer(UserSerializer):
             'username',
             'first_name',
             'last_name',
-            # 'is_subscribed'
+            'is_subscribed'
         )
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Follow.objects.filter(user=user, following=obj).exists()
+
+
+class SubscribeSerializer(CustomUserSerializer):
+    recipes_count = SerializerMethodField()
+    recipes = SerializerMethodField()
+
+    class Meta(CustomUserSerializer.Meta):
+        fields = CustomUserSerializer.Meta.fields + (
+            'recipes_count', 'recipes'
+        )
+        read_only_fields = ('email', 'username')
+
+    def validate(self, data):
+        author = self.instance
+        user = self.context.get('request').user
+        if Follow.objects.filter(author=author, user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Вы не можете подписаться на самого себя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        return data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        recipes = obj.recipes.all()
+        if limit == "" or not (limit.isdigit()):
+            raise ValidationError({
+                    'recipes_limit': 'Может быть только числом!'
+                })
+        recipes = recipes[:int(limit)]
+        serializer = RecipeInFollowSerializer(recipes, many=True, read_only=True)
+        return serializer.data
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -44,6 +96,8 @@ class RecipieReadSerializers(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     ingredients = SerializerMethodField()
     image = Base64ImageField(required=False, allow_null=True)
+    is_favorited = SerializerMethodField(read_only=True)
+    is_in_shopping_cart = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Recipe
@@ -52,6 +106,8 @@ class RecipieReadSerializers(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
             'name',
             'image',
             'text',
@@ -66,6 +122,17 @@ class RecipieReadSerializers(serializers.ModelSerializer):
             amount=F('recipe__amount')
         )
 
+    def get_is_favorited(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return user.favorites.filter(recipe=obj).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return user.shopping_cart.filter(recipe=obj).exists()
 
 class IngredientAmountSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(write_only=True)
@@ -123,3 +190,18 @@ class RecipieWrightSerializers(serializers.ModelSerializer):
     #     instance.created = validated_data.get('created', instance.created)
     #     instance.save()
     #     return instance
+
+
+
+
+class RecipeInFollowSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )

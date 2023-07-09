@@ -1,9 +1,12 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
 from django.db.models import Count, Case, When, Avg
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from food.models import Tag, Ingredient, Recipe, IngredientAmount
+
+User = get_user_model()
 
 
 class FoodApiTestCase(APITestCase):

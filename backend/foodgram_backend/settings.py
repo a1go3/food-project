@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'api.apps.ApiConfig',
-    'food.apps.FoodConfig'
+    'food.apps.FoodConfig',
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'ru-ru'
 
