@@ -5,16 +5,19 @@ from .serializers import TagSerializer, IngredientSerializer, RecipieReadSeriali
 
 
 class TagViewSet(viewsets.ModelViewSet):
+    """Вьюсет для моделей Tag."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
+    """Вьюсет для моделей Ingredient."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """Вьюсет для моделей Recipe."""
     queryset = Recipe.objects.all()
 
     def get_serializer_class(self):

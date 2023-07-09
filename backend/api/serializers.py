@@ -78,15 +78,26 @@ class SubscribeSerializer(CustomUserSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    """Сериализатор для тегов."""
     class Meta:
         model = Tag
         fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    """Сериализатор для ингредиентов."""
     class Meta:
         model = Ingredient
         fields = '__all__'
+
+
+class IngredientAmountSerializer(serializers.ModelSerializer):
+    """Сериализатор для количества ингредиентов в рецепте."""
+    id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = IngredientAmount
+        fields = ('id', 'amount')
 
 
 class RecipieReadSerializers(serializers.ModelSerializer):
@@ -133,13 +144,6 @@ class RecipieReadSerializers(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return user.shopping_cart.filter(recipe=obj).exists()
-
-class IngredientAmountSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(write_only=True)
-
-    class Meta:
-        model = IngredientAmount
-        fields = ('id', 'amount')
 
 
 class RecipieWrightSerializers(serializers.ModelSerializer):
@@ -190,8 +194,6 @@ class RecipieWrightSerializers(serializers.ModelSerializer):
     #     instance.created = validated_data.get('created', instance.created)
     #     instance.save()
     #     return instance
-
-
 
 
 class RecipeInFollowSerializer(serializers.ModelSerializer):
