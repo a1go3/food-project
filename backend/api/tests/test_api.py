@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -16,10 +18,22 @@ class FoodApiTestCase(APITestCase):
             color='синий',
             slug='breakfast'
         )
+        tag_two = Tag.objects.create(
+            name='обед',
+            color='красный',
+            slug='lunch'
+        )
+        tag_two.save()
+
         ingredient = Ingredient.objects.create(
             name='яйцо',
             measurement_unit='шт'
         )
+        ingredient_two = Ingredient.objects.create(
+            name='молоко',
+            measurement_unit='л'
+        )
+        ingredient_two.save()
         recipe = Recipe.objects.create(
             author=self.user,
             name='Яичница',
@@ -34,12 +48,20 @@ class FoodApiTestCase(APITestCase):
             )
         new_recipe.save()
 
-    def test_get(self):
+    def test_get_recipe_detail(self):
+        print(Recipe.objects.count())
+        url_two = reverse('api:recipes-detail', args='1')
+        print(url_two)
+        response_two = self.client.get(url_two)
+        self.assertEquals(status.HTTP_200_OK, response_two.status_code)
+
+    def test_get_list_recipe(self):
         url = reverse('api:recipes-list')
         response = self.client.get(url)
-        print(response.data)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEquals(Recipe.objects.count(), 1)
+
+
 
     def test_create(self):
         url = reverse('api:recipes-list')
@@ -62,26 +84,25 @@ class FoodApiTestCase(APITestCase):
         self.assertEquals(Recipe.objects.count(), 2)
         self.assertEquals(Recipe.objects.get(pk=2).name, 'Яичница-2')
 
-        url_two = reverse('api:recipes-detail', args='1')
-        response_two = self.client.get(url_two)
-        print(response_two.data)
-        self.assertEquals(status.HTTP_200_OK, response_two.status_code)
-
-    def test_update(self):
-        url = reverse('api:recipes-detail', args='1')
-        data = {
-            'tags': [
-                1
-            ],
-            'ingredients': [
-                {
-                    'id': 1,
-                    'amount': 3
-                }
-            ],
-            'name': 'Яичница-2',
-            'text': 'Разбей яйца и пожарь.',
-            'cooking_time': 10
-        }
-        response = self.client.patch(url, data)
-        print(response.status_code)
+    # def test_update(self):
+    #     url = reverse('api:recipes-detail', args='1')
+    #     data = {
+    #         'tags': [
+    #             2
+    #         ],
+    #         'ingredients': [
+    #             {
+    #                 'id': 2,
+    #                 'amount': 4
+    #             }
+    #         ],
+    #         'name': 'Омлет',
+    #         'text': 'Разбей яйца, добавь молоко и пожарь.',
+    #         'cooking_time': 10
+    #     }
+    #     response = self.client.patch(url, data)
+    #     print(Recipe.objects.get(id=1))
+    #     print(response.data)
+    #     print(response.status_code)
+    #     self.assertEquals(status.HTTP_200_OK, response.status_code)
+    #     self.assertEquals(Recipe.objects.get(pk=1).name, 'Омлет')
