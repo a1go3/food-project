@@ -15,6 +15,19 @@ from rest_framework import status
 User = get_user_model()
 
 
+class RecipeInFollowSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
+
+
 class CustomUserSerializer(UserSerializer):
     is_subscribed = SerializerMethodField(read_only=True)
 
@@ -35,7 +48,7 @@ class CustomUserSerializer(UserSerializer):
             return False
         return Follow.objects.filter(user=user, following=obj).exists()
 
-    def create(self, validated_data: dict):
+    def create(self, validated_data):
         user = User(
             email=validated_data['email'],
             username=validated_data['username'],
@@ -58,14 +71,14 @@ class SubscribeSerializer(CustomUserSerializer):
         read_only_fields = ('email', 'username')
 
     def validate(self, data):
-        author = self.instance
+        following = self.instance
         user = self.context.get('request').user
-        if Follow.objects.filter(author=author, user=user).exists():
+        if Follow.objects.filter(following=following, user=user).exists():
             raise ValidationError(
                 detail='Вы уже подписаны на этого пользователя!',
                 code=status.HTTP_400_BAD_REQUEST
             )
-        if user == author:
+        if user == following:
             raise ValidationError(
                 detail='Вы не можете подписаться на самого себя!',
                 code=status.HTTP_400_BAD_REQUEST
@@ -79,13 +92,9 @@ class SubscribeSerializer(CustomUserSerializer):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()
-        if limit == "" or not (limit.isdigit()):
-            raise ValidationError({
-                'recipes_limit': 'Может быть только числом!'
-            })
-        recipes = recipes[:int(limit)]
-        serializer = RecipeInFollowSerializer(recipes, many=True,
-                                              read_only=True)
+        if limit:
+            recipes = recipes[:int(limit)]
+        serializer = RecipeInFollowSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
 
@@ -194,11 +203,11 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
                 raise ValidationError({
-                    'ingredients': 'Этот ингредиент уже есть'
+                    'ingredients': 'Этот ингредиент уже присутствует!'
                 })
             if int(item['amount']) <= 0:
                 raise ValidationError({
-                    'amount': 'Укажите количество ингредиентов'
+                    'amount': 'Укажите количество ингредиентов!'
                 })
             ingredients_list.append(ingredient)
         return value
@@ -220,11 +229,13 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
 
     def create_amount_ingredient(self, ingredients, recipe):
         IngredientAmount.objects.bulk_create(
-            [IngredientAmount(
-                ingredient=Ingredient.objects.get(id=ingredient['id']),
-                recipe=recipe,
-                amount=ingredient['amount']
-            ) for ingredient in ingredients]
+            [
+                IngredientAmount(
+                    ingredient=Ingredient.objects.get(id=ingredient['id']),
+                    recipe=recipe,
+                    amount=ingredient['amount']
+                ) for ingredient in ingredients
+            ]
         )
 
     def create(self, validated_data):
@@ -256,14 +267,3 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
     #                                 context=context).data
 
 
-class RecipeInFollowSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time'
-        )

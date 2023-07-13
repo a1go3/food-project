@@ -45,35 +45,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-# class User(AbstractUser):
-#     """Модель пользователя. """
-#     email = models.EmailField(
-#         verbose_name='Адрес электронной почты',
-#         max_length=25,
-#         unique=True,
-#         help_text='Введите адрес электронной почты',
-#     )
-#     username = models.CharField(
-#         max_length=15,
-#         unique=True,
-#         help_text='Придумайте никнейм',
-#     )
-#     first_name = models.CharField(
-#         verbose_name='Имя',
-#         max_length=15,
-#         help_text='Введите имя',
-#     )
-#     last_name = models.CharField(
-#         verbose_name='Фамилия',
-#         max_length=15,
-#         help_text='Введите фамилию',
-#     )
-#     password = models.CharField(
-#         verbose_name='Пароль',
-#         max_length=128,
-#         help_text='Введите пароль',
-#     )
-
 
 class Follow(models.Model):
     """Модель подписки."""

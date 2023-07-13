@@ -1,4 +1,5 @@
 from api.serializers import CustomUserSerializer, SubscribeSerializer
+from api.pagination import CustomPagination
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -15,6 +16,7 @@ User = get_user_model()
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
+    pagination_class = CustomPagination
 
     @action(
         detail=True,
@@ -53,3 +55,11 @@ class CustomUserViewSet(UserViewSet):
                                          many=True,
                                          context={'request': request})
         return self.get_paginated_response(serializer.data)
+
+
+    # def subscriptions(self, request):
+    #     pages = self.paginate_queryset(
+    #         User.objects.filter(follower__user=self.request.user)
+    #     )
+    #     serializer = SubscribeSerializer(pages, many=True)
+    #     return self.get_paginated_response(serializer.data)
