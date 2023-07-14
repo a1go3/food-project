@@ -16,26 +16,7 @@ class User(AbstractUser):
         unique=True,
         help_text='Введите адрес электронной почты',
     )
-    username = models.CharField(
-        max_length=15,
-        unique=True,
-        help_text='Придумайте никнейм',
-    )
-    first_name = models.CharField(
-        verbose_name='Имя',
-        max_length=15,
-        help_text='Введите имя',
-    )
-    last_name = models.CharField(
-        verbose_name='Фамилия',
-        max_length=15,
-        help_text='Введите фамилию',
-    )
-    password = models.CharField(
-        verbose_name='Пароль',
-        max_length=128,
-        help_text='Введите пароль',
-    )
+
 
     class Meta:
         ordering = ['id']
@@ -47,22 +28,31 @@ class User(AbstractUser):
 
 
 class Follow(models.Model):
-    """Модель подписки."""
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='follower')
-    following = models.ForeignKey(User, on_delete=models.CASCADE,
-                                  related_name='following')
+    """ Модель подписки. """
+    user = models.ForeignKey(
+        User,
+        related_name='subscriber',
+        verbose_name="Подписчик",
+        on_delete=models.CASCADE,
+    )
+    author = models.ForeignKey(
+        User,
+        related_name='subscribing',
+        verbose_name="Автор",
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
-        verbose_name = 'Подписчик'
-        verbose_name_plural = 'Подписчики'
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ['-id']
         constraints = [
-            models.UniqueConstraint(fields=['user', 'following'],
+            models.UniqueConstraint(fields=['user', 'author'],
                                     name='unique_follow'),
-            models.CheckConstraint(check=~models.Q(user=models.F('following')),
+            models.CheckConstraint(check=~models.Q(user=models.F('author')),
                                    name='not_self_follow')
 
         ]
 
     def __str__(self):
-        return f'{self.user} подписан на {self.following}'
+        return f'{self.user} подписан на {self.author}'

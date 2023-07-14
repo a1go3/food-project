@@ -18,4 +18,4 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('user', 'following',)
+    list_display = ('user', 'author',)
