@@ -14,18 +14,6 @@ from rest_framework import status
 User = get_user_model()
 
 
-class RecipeInFollowSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time'
-        )
-
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
@@ -121,11 +109,10 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к рецептам."""
-    author = CustomUserSerializer(read_only=True,
-                                  default=serializers.CurrentUserDefault())
-    tags = TagSerializer(many=True)
+    author = CustomUserSerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
     ingredients = SerializerMethodField()
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField()
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
 
@@ -261,3 +248,16 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         context = {'request': request}
         return RecipeReadSerializer(instance,
                                     context=context).data
+
+
+class RecipeInFollowSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.core.validators import MinValueValidator, RegexValidator
 
 User = get_user_model()
 
@@ -15,7 +16,13 @@ class Tag(models.Model):
     color = models.CharField(
         unique=True,
         max_length=7,
-        verbose_name='Цвет'
+        verbose_name='Цвет',
+        validators=[
+            RegexValidator(
+                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+                message='Вы ввели цвет не в формате HEX'
+            )
+        ]
     )
     slug = models.SlugField(
         unique=True,
@@ -105,18 +112,17 @@ class IngredientAmount(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='ingredient',
+        related_name='ingredient_list',
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='recipe',
         verbose_name='Ингредиент'
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        default=0,
+        validators=[MinValueValidator(1, message='Укажите число больше 0')]
     )
 
     class Meta:
@@ -146,8 +152,10 @@ class Favourite(models.Model):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = [
-            UniqueConstraint(fields=['user', 'recipe'],
-                             name='unique_favourite')
+            UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_favourite'
+            )
         ]
 
     def __str__(self):
@@ -173,8 +181,10 @@ class ShoppingCart(models.Model):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = [
-            UniqueConstraint(fields=['user', 'recipe'],
-                             name='unique_shopping_cart')
+            UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_shopping_cart'
+            )
         ]
 
     def __str__(self):
