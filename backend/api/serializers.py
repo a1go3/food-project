@@ -259,9 +259,9 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
                                       ingredients=ingredients)
         instance.save()
         return instance
-    #
-    # def to_representation(self, instance):
-    #     request = self.context.get('request')
-    #     context = {'request': request}
-    #     return RecipeReadSerializer(instance,
-    #                                 context=context).data
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return RecipeReadSerializer(instance,
+                                    context=context).data

@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 
 from food.models import Ingredient
 
-PATH = './data/'
+PATH = '../data/'
 INGREDIENTS = 'ingredients.csv'
 MESSAGE = 'был успешно загружен в базу данных.'
 UTF = 'UTF-8'
