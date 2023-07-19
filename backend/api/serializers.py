@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework.fields import SerializerMethodField
-from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from food.models import Tag, Ingredient, Recipe, IngredientAmount
 from users.models import Follow
@@ -14,7 +13,22 @@ from rest_framework import status
 User = get_user_model()
 
 
+class RecipeInFollowSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода рецептов в подписках."""
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
+
+
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор для создания пользователя."""
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
@@ -24,6 +38,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
+    """Сериализатор пользователя."""
     is_subscribed = SerializerMethodField(read_only=True)
 
     class Meta:
@@ -244,22 +259,9 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
                                       ingredients=ingredients)
         instance.save()
         return instance
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeReadSerializer(instance,
-                                    context=context).data
-
-
-class RecipeInFollowSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time'
-        )
+    #
+    # def to_representation(self, instance):
+    #     request = self.context.get('request')
+    #     context = {'request': request}
+    #     return RecipeReadSerializer(instance,
+    #                                 context=context).data
