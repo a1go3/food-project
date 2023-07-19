@@ -45,6 +45,7 @@ class CustomUserSerializer(UserSerializer):
 
 
 class SubscribeSerializer(CustomUserSerializer):
+    """Сериализатор для подписки."""
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
@@ -110,7 +111,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к рецептам."""
     author = CustomUserSerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True)
     ingredients = SerializerMethodField()
     image = Base64ImageField()
     is_favorited = SerializerMethodField(read_only=True)
@@ -161,6 +162,7 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
     ingredients = IngredientAmountSerializer(
         many=True
     )
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
