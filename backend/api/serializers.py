@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework.fields import SerializerMethodField
-from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from food.models import Tag, Ingredient, Recipe, IngredientAmount
 from users.models import Follow
@@ -25,6 +24,7 @@ class RecipeInFollowSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time'
         )
+
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
@@ -121,11 +121,10 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к рецептам."""
-    author = CustomUserSerializer(read_only=True,
-                                  default=serializers.CurrentUserDefault())
+    author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True)
     ingredients = SerializerMethodField()
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField()
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
 
@@ -255,9 +254,9 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
                                       ingredients=ingredients)
         instance.save()
         return instance
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeReadSerializer(instance,
-                                    context=context).data
+    #
+    # def to_representation(self, instance):
+    #     request = self.context.get('request')
+    #     context = {'request': request}
+    #     return RecipeReadSerializer(instance,
+    #                                 context=context).data

@@ -1,5 +1,5 @@
-from api.serializers import CustomUserSerializer, SubscribeSerializer
 from api.pagination import Pagination
+from api.serializers import CustomUserSerializer, SubscribeSerializer
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -31,7 +31,7 @@ class CustomUserViewSet(UserViewSet):
         if request.method == 'POST':
             serializer = SubscribeSerializer(author,
                                              data=request.data,
-                                             context={"request": request})
+                                             context={'request': request})
             serializer.is_valid(raise_exception=True)
             Follow.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -49,7 +49,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(subscribing__user=user)
+        queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscribeSerializer(pages,
                                          many=True,

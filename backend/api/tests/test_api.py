@@ -15,12 +15,12 @@ class FoodApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         tag = Tag.objects.create(
             name='завтрак',
-            color='синий',
+            color='#0000ff',
             slug='breakfast'
         )
         tag_two = Tag.objects.create(
             name='обед',
-            color='красный',
+            color='#ff0000',
             slug='lunch'
         )
         tag_two.save()
@@ -74,6 +74,7 @@ class FoodApiTestCase(APITestCase):
                 }
             ],
             'name': 'Яичница-2',
+            'image': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==',
             'text': 'Разбей яйца и пожарь.',
             'cooking_time': 100
         }
