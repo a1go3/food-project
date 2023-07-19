@@ -51,7 +51,6 @@ class FoodApiTestCase(APITestCase):
     def test_get_recipe_detail(self):
         print(Recipe.objects.count())
         url_two = reverse('api:recipes-detail', args='1')
-        print(url_two)
         response_two = self.client.get(url_two)
         self.assertEquals(status.HTTP_200_OK, response_two.status_code)
 
@@ -100,8 +99,5 @@ class FoodApiTestCase(APITestCase):
             'cooking_time': 10
         }
         response = self.client.patch(url, data)
-        # print(Recipe.objects.get(id=1))
-        # print(response.data)
-        # print(response.status_code)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEquals(Recipe.objects.get(pk=1).name, 'Омлет')
