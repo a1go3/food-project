@@ -14,6 +14,7 @@ User = get_user_model()
 
 
 class RecipeInFollowSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода рецептов в подписках."""
     image = Base64ImageField()
 
     class Meta:
@@ -27,6 +28,7 @@ class RecipeInFollowSerializer(serializers.ModelSerializer):
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор для создания пользователя."""
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
@@ -36,6 +38,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
+    """Сериализатор пользователя."""
     is_subscribed = SerializerMethodField(read_only=True)
 
     class Meta:
@@ -57,6 +60,7 @@ class CustomUserSerializer(UserSerializer):
 
 
 class SubscribeSerializer(CustomUserSerializer):
+    """Сериализатор для подписки."""
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
