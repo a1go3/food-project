@@ -15,12 +15,12 @@ class FoodApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         tag = Tag.objects.create(
             name='завтрак',
-            color='синий',
+            color='#0000ff',
             slug='breakfast'
         )
         tag_two = Tag.objects.create(
             name='обед',
-            color='красный',
+            color='#FF0000',
             slug='lunch'
         )
         tag_two.save()
@@ -49,7 +49,6 @@ class FoodApiTestCase(APITestCase):
         new_recipe.save()
 
     def test_get_recipe_detail(self):
-        print(Recipe.objects.count())
         url_two = reverse('api:recipes-detail', args='1')
         response_two = self.client.get(url_two)
         self.assertEquals(status.HTTP_200_OK, response_two.status_code)
