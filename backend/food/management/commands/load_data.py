@@ -14,12 +14,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open(
-            f'{PATH}{INGREDIENTS}',
-            'r',
-            encoding=UTF
+                f'{PATH}{INGREDIENTS}',
+                'r',
+                encoding=UTF
         ) as csvFile:
             data = csv.reader(csvFile, delimiter=',')
             Ingredient.objects.bulk_create(
-                Ingredient(name=name, measurement_unit=measurement_unit) for name, measurement_unit in data)
+                Ingredient(
+                    name=name,
+                    measurement_unit=measurement_unit) for
+                name, measurement_unit in data)
             self.stdout.write(self.style.SUCCESS(
                 f'{INGREDIENTS} {MESSAGE}'))

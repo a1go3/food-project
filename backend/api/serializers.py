@@ -29,6 +29,7 @@ class RecipeInFollowSerializer(serializers.ModelSerializer):
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор для создания пользователя."""
+
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
@@ -38,7 +39,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
-    """Сериализатор пользователя."""
+    """Сериализатор для пользователя."""
     is_subscribed = SerializerMethodField(read_only=True)
 
     class Meta:
@@ -59,7 +60,7 @@ class CustomUserSerializer(UserSerializer):
         return Follow.objects.filter(user=user, author=obj).exists()
 
 
-class SubscribeSerializer(CustomUserSerializer):
+class FollowSerializer(CustomUserSerializer):
     """Сериализатор для подписки."""
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
@@ -75,12 +76,12 @@ class SubscribeSerializer(CustomUserSerializer):
         user = self.context.get('request').user
         if Follow.objects.filter(author=author, user=user).exists():
             raise ValidationError(
-                detail='Вы уже подписаны на этого пользователя!',
+                detail='Вы уже подписаны на этого пользователя',
                 code=status.HTTP_400_BAD_REQUEST
             )
         if user == author:
             raise ValidationError(
-                detail='Вы не можете подписаться на самого себя!',
+                detail='Вы не можете подписаться на самого себя',
                 code=status.HTTP_400_BAD_REQUEST
             )
         return data
@@ -94,7 +95,8 @@ class SubscribeSerializer(CustomUserSerializer):
         recipes = obj.recipes.all()
         if limit:
             recipes = recipes[:int(limit)]
-        serializer = RecipeInFollowSerializer(recipes, many=True, read_only=True)
+        serializer = RecipeInFollowSerializer(recipes, many=True,
+                                              read_only=True)
         return serializer.data
 
 
@@ -174,9 +176,7 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         queryset=Tag.objects.all(),
         many=True
     )
-    ingredients = IngredientAmountSerializer(
-        many=True
-    )
+    ingredients = IngredientAmountSerializer(many=True)
     image = Base64ImageField()
 
     class Meta:
@@ -196,18 +196,18 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         ingredients = value
         if not ingredients:
             raise ValidationError({
-                'ingredients': 'Добавьте ингредиент!'
+                'ingredients': 'Добавьте ингредиент'
             })
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
                 raise ValidationError({
-                    'ingredients': 'Этот ингредиент уже присутствует!'
+                    'ingredients': 'Этот ингредиент уже добавлен'
                 })
             if int(item['amount']) <= 0:
                 raise ValidationError({
-                    'amount': 'Укажите количество ингредиентов!'
+                    'amount': 'Укажите количество ингредиентов'
                 })
             ingredients_list.append(ingredient)
         return value
@@ -216,13 +216,13 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         tags = value
         if not tags:
             raise ValidationError({
-                'tags': 'Добавьте тег!'
+                'tags': 'Добавьте тег'
             })
         tags_list = []
         for tag in tags:
             if tag in tags_list:
                 raise ValidationError({
-                    'tags': 'Добавьте разные теги'
+                    'tags': 'Вы уже добавили этот тег'
                 })
             tags_list.append(tag)
         return value
@@ -263,5 +263,5 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
-        return RecipeReadSerializer(instance,
-                                    context=context).data
+        return RecipeReadSerializer(
+            instance, context=context).data

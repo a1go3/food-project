@@ -13,7 +13,8 @@ from .filters import IngredientFilter, RecipeFilter
 from food.models import (Tag, Ingredient, Recipe, IngredientAmount, Favourite,
                          ShoppingCart)
 from .serializers import (TagSerializer, IngredientSerializer,
-                          RecipeReadSerializer, RecipeWriteSerializers, RecipeInFollowSerializer)
+                          RecipeReadSerializer, RecipeWriteSerializers,
+                          RecipeInFollowSerializer)
 from .pagination import Pagination
 
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
@@ -23,24 +24,24 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для моделей Tag."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для моделей Ingredient."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend,)
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
     filterset_class = IngredientFilter
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для моделей Recipe."""
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
+    permission_classes = [IsAuthorOrReadOnly | IsAdminOrReadOnly]
     pagination_class = Pagination
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):

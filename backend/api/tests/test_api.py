@@ -45,7 +45,7 @@ class FoodApiTestCase(APITestCase):
             recipe=recipe,
             ingredient=ingredient,
             amount=10
-            )
+        )
         new_recipe.save()
 
     def test_get_recipe_detail(self):
@@ -72,7 +72,10 @@ class FoodApiTestCase(APITestCase):
                 }
             ],
             'name': 'Яичница-2',
-            'image': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==',
+            'image': f'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA'
+                     f'BAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMA'
+                     f'AA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJR'
+                     f'U5ErkJggg==',
             'text': 'Разбей яйца и пожарь.',
             'cooking_time': 100
         }
