@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import UniqueConstraint, CheckConstraint
+from django.db.models import CheckConstraint, UniqueConstraint
 
 
 class User(AbstractUser):
@@ -47,7 +47,7 @@ class Follow(models.Model):
         ordering = ['-id']
         constraints = [
             UniqueConstraint(fields=['user', 'author'],
-                                    name='unique_follow'),
+                             name='unique_follow'),
             CheckConstraint(check=~models.Q(user=models.F('author')),
-                                   name='not_self_follow')
+                            name='not_self_follow')
         ]

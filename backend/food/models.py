@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.core.validators import MinValueValidator, RegexValidator
 
 User = get_user_model()
 
@@ -30,9 +30,9 @@ class Tag(models.Model):
         verbose_name='Идентификатор')
 
     class Meta:
-        verbose_name = "Тег"
-        verbose_name_plural = "Теги"
-        ordering = ("name",)
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+        ordering = ('name',)
 
     def __str__(self):
         return self.name

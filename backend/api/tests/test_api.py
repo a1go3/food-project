@@ -1,10 +1,8 @@
-from pprint import pprint
-
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from food.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import status
 from rest_framework.test import APITestCase
-from food.models import Tag, Ingredient, Recipe, IngredientAmount
 
 User = get_user_model()
 

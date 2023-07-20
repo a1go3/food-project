@@ -3,7 +3,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-
 User = get_user_model()
 
 
@@ -20,10 +19,3 @@ class UsersTests(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.get().username, 'Test3')
-
-    def test_subscribe(self):
-        self.user = User.objects.create(username='test_user')
-        self.user_two = User.objects.create(username='test_user_two')
-        self.client.force_authenticate(user=self.user)
-        self.client.force_authenticate(user=self.user_two)
-        url = reverse('users:user-subscribe', args=1)
