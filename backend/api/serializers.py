@@ -32,10 +32,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
     class Meta:
         model = User
-        fields = tuple(User.REQUIRED_FIELDS) + (
-            User.USERNAME_FIELD,
-            'password',
-        )
+        fields = tuple(
+            User.REQUIRED_FIELDS) + (User.USERNAME_FIELD, 'password')
 
 
 class CustomUserSerializer(UserSerializer):
@@ -102,7 +100,6 @@ class FollowSerializer(CustomUserSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для тегов."""
-
     class Meta:
         model = Tag
         fields = '__all__'
@@ -110,7 +107,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для ингредиентов."""
-
     class Meta:
         model = Ingredient
         fields = '__all__'
@@ -245,7 +241,8 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         recipe.tags.set(tags)
         self.create_amount_ingredient(
             recipe=recipe,
-            ingredients=ingredients)
+            ingredients=ingredients
+        )
         return recipe
 
     def update(self, instance, validated_data):
@@ -255,8 +252,10 @@ class RecipeWriteSerializers(serializers.ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        self.create_amount_ingredient(recipe=instance,
-                                      ingredients=ingredients)
+        self.create_amount_ingredient(
+            recipe=instance,
+            ingredients=ingredients
+        )
         instance.save()
         return instance
 
