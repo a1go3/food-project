@@ -28,7 +28,6 @@ class RecipeInFollowSerializer(serializers.ModelSerializer):
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор для создания пользователя."""
-
     class Meta:
         model = User
         fields = tuple(
