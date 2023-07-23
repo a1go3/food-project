@@ -59,6 +59,10 @@ class FoodApiTestCase(APITestCase):
 
     def test_create(self):
         url = reverse('api:recipes-list')
+        image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA' \
+                'BAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA' \
+                '7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5E' \
+                'rkJggg=='
         data = {
             'tags': [
                 1
@@ -70,10 +74,7 @@ class FoodApiTestCase(APITestCase):
                 }
             ],
             'name': 'Яичница-2',
-            'image': f'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA'
-                     f'BAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMA'
-                     f'AA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJR'
-                     f'U5ErkJggg==',
+            'image': image,
             'text': 'Разбей яйца и пожарь.',
             'cooking_time': 100
         }
