@@ -8,7 +8,7 @@ from .filters import IngredientFilter, RecipeFilter
 from .pagination import Pagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeReadSerializer,
-                          RecipeWriteSerializers, TagSerializer)
+                          RecipeWriteSerializer, TagSerializer)
 from .utils import add_delete_recipe, downloading
 
 
@@ -38,7 +38,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
-            return RecipeWriteSerializers
+            return RecipeWriteSerializer
         return RecipeReadSerializer
 
     def perform_create(self, serializer):

@@ -3,10 +3,11 @@ from django.db.models import F
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from food.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
+
+from food.models import Ingredient, IngredientAmount, Recipe, Tag
 from users.models import Follow
 
 User = get_user_model()
@@ -58,8 +59,8 @@ class CustomUserSerializer(UserSerializer):
 
 class FollowSerializer(CustomUserSerializer):
     """Сериализатор для подписки."""
-    recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
+    recipes_count = serializers.ReadOnlyField(source='recipes.count')
 
     class Meta(CustomUserSerializer.Meta):
         fields = CustomUserSerializer.Meta.fields + (
@@ -81,9 +82,6 @@ class FollowSerializer(CustomUserSerializer):
                 code=status.HTTP_400_BAD_REQUEST
             )
         return data
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -164,7 +162,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         return user.shopping_cart.filter(recipe=obj).exists()
 
 
-class RecipeWriteSerializers(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления и изменения рецептов."""
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
