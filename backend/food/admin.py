@@ -10,6 +10,7 @@ class MembershipInline(admin.TabularInline):
     extra = 0
     min_num = 1
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color', 'slug')
@@ -22,6 +23,7 @@ class IngredientAdmin(admin.ModelAdmin):
     inlines = [
         MembershipInline
     ]
+
 
 @admin.register(Recipe)
 class RecipiesAdmin(admin.ModelAdmin):

@@ -29,6 +29,7 @@ class RecipeInFollowSerializer(serializers.ModelSerializer):
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор для создания пользователя."""
+
     class Meta:
         model = User
         fields = tuple(
@@ -96,6 +97,7 @@ class FollowSerializer(CustomUserSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для тегов."""
+
     class Meta:
         model = Tag
         fields = '__all__'
@@ -103,6 +105,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для ингредиентов."""
+
     class Meta:
         model = Ingredient
         fields = '__all__'
@@ -190,20 +193,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise ValidationError({
                 'ingredients': 'Добавьте ингредиент'
             })
-        # ingredients_list = []
-        # for item in ingredients:
-        #     ingredient = get_object_or_404(Ingredient, id=item['id'])
-        #     if ingredient in ingredients_list:
-        #         raise ValidationError({
-        #             'ingredients': 'Этот ингредиент уже добавлен'
-        #         })
-        #     if int(item['amount']) <= 0:
-        #         raise ValidationError({
-        #             'amount': 'Укажите количество ингредиентов'
-        #         })
-        #     ingredients_list.append(ingredient)
-        # return value
-
         ingredients_set = set()
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
@@ -213,11 +202,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 })
             if int(item['amount']) <= 0:
                 raise ValidationError({
-                        'amount': 'Укажите количество ингредиентов'
-                    })
+                    'amount': 'Укажите количество ингредиентов'
+                })
             ingredients_set.add(ingredient)
         return value
-
 
     def validate_tags(self, value):
         tags = value
