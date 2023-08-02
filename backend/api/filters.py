@@ -18,7 +18,7 @@ class RecipeFilter(FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'author',)
+        fields = ['tags', 'author']
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         if value and not self.request.user.is_anonymous:

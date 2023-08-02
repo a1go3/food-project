@@ -1,6 +1,7 @@
+from django.conf import settings
 from rest_framework.pagination import PageNumberPagination
 
-from foodgram_backend.settings import PAGE_SIZE
+PAGE_SIZE = settings.PAGE_SIZE
 
 
 class Pagination(PageNumberPagination):

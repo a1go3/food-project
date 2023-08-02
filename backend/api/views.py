@@ -1,15 +1,15 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from food.models import Favourite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
-from .filters import IngredientFilter, RecipeFilter
-from .pagination import Pagination
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (IngredientSerializer, RecipeReadSerializer,
-                          RecipeWriteSerializer, TagSerializer)
-from .utils import add_delete_recipe, downloading
+from api.filters import IngredientFilter, RecipeFilter
+from api.pagination import Pagination
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.serializers import (IngredientSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, TagSerializer)
+from api.utils import add_delete_recipe, downloading
+from food.models import Favourite, Ingredient, Recipe, ShoppingCart, Tag
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

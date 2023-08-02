@@ -190,19 +190,34 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise ValidationError({
                 'ingredients': 'Добавьте ингредиент'
             })
-        ingredients_list = []
+        # ingredients_list = []
+        # for item in ingredients:
+        #     ingredient = get_object_or_404(Ingredient, id=item['id'])
+        #     if ingredient in ingredients_list:
+        #         raise ValidationError({
+        #             'ingredients': 'Этот ингредиент уже добавлен'
+        #         })
+        #     if int(item['amount']) <= 0:
+        #         raise ValidationError({
+        #             'amount': 'Укажите количество ингредиентов'
+        #         })
+        #     ingredients_list.append(ingredient)
+        # return value
+
+        ingredients_set = set()
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
-            if ingredient in ingredients_list:
+            if ingredient in ingredients_set:
                 raise ValidationError({
                     'ingredients': 'Этот ингредиент уже добавлен'
                 })
             if int(item['amount']) <= 0:
                 raise ValidationError({
-                    'amount': 'Укажите количество ингредиентов'
-                })
-            ingredients_list.append(ingredient)
+                        'amount': 'Укажите количество ингредиентов'
+                    })
+            ingredients_set.add(ingredient)
         return value
+
 
     def validate_tags(self, value):
         tags = value
@@ -210,13 +225,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise ValidationError({
                 'tags': 'Добавьте тег'
             })
-        tags_list = []
+        tags_set = set()
         for tag in tags:
-            if tag in tags_list:
+            if tag in tags_set:
                 raise ValidationError({
                     'tags': 'Вы уже добавили этот тег'
                 })
-            tags_list.append(tag)
+            tags_set.add(tag)
         return value
 
     def create_amount_ingredient(self, ingredients, recipe):
