@@ -194,28 +194,20 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
-                raise ValidationError({
-                    'ingredients': 'Этот ингредиент уже добавлен'
-                })
+                raise ValidationError('Этот ингредиент уже добавлен')
             if int(item['amount']) <= 0:
-                raise ValidationError({
-                    'amount': 'Укажите количество ингредиентов'
-                })
+                raise ValidationError('Укажите количество ингредиентов')
             ingredients_list.append(ingredient)
         return value
 
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise ValidationError({
-                'tags': 'Добавьте тег'
-            })
+            raise ValidationError('Добавьте тег')
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                raise ValidationError({
-                    'tags': 'Вы уже добавили этот тег'
-                })
+                raise ValidationError('Вы уже добавили этот тег')
             tags_list.append(tag)
         return value
 
