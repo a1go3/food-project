@@ -13,7 +13,7 @@ class UserAdmin(UserAdmin):
         'first_name',
         'last_name',
     )
-    list_filter = ('email', 'first_name')
+    list_filter = ('first_name', 'email')
 
 
 @admin.register(Follow)

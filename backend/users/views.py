@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from api.pagination import Pagination
 from api.serializers import CustomUserSerializer, FollowSerializer
-from .models import Follow
+from users.models import Follow
 
 User = get_user_model()
 

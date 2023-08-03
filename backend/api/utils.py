@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from api.serializers import RecipeInFollowSerializer
 from food.models import IngredientAmount, Recipe
-from .serializers import RecipeInFollowSerializer
 
 
 def downloading(request):
