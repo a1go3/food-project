@@ -34,6 +34,7 @@ def downloading(request):
     response['Content-Disposition'] = f'attachment; filename={filename}'
     return response
 
+
 def add_delete_recipe(request, pk, models):
     """Функция для добавления и удаления рецепта из избранного
     или списка покупок. """
