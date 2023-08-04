@@ -1,9 +1,12 @@
 import csv
+import os
 
 from django.core.management import BaseCommand
+
 from food.models import Ingredient
 
-PATH = '../data/'
+
+PATH = os.path.join('data/')
 INGREDIENTS = 'ingredients.csv'
 MESSAGE = 'был успешно загружен в базу данных.'
 UTF = 'UTF-8'
