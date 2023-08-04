@@ -29,11 +29,15 @@ def downloading(request):
         f'{ingredient["ingredient__measurement_unit"]}'
         for num, ingredient in enumerate(ingredients, start=1)
     ])
-
-    filename = f'shopping_cart_for_{request.user.username}.txt'
-    response = HttpResponse(shopping_cart, content_type='text/plain')
-    response['Content-Disposition'] = f'attachment; filename={filename}'
+    file = 'shopping_list'
+    response = HttpResponse(shopping_cart, 'Content-Type: application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{file}.pdf"'
     return response
+
+    # filename = f'shopping_cart_for_{request.user.username}.txt'
+    # response = HttpResponse(shopping_cart, content_type='text/plain')
+    # response['Content-Disposition'] = f'attachment; filename={filename}'
+    # return response
 
 
 def add_delete_recipe(request, pk, models):
