@@ -88,7 +88,7 @@ class Recipe(models.Model):
         max_length=200,
         verbose_name='Название')
     text = models.CharField(
-        max_length=200,
+        max_length=2000,
         verbose_name='Описание')
     cooking_time = models.PositiveIntegerField(
         verbose_name='Время готовки',
