@@ -30,6 +30,7 @@ password: !AL87bJ
 ### Для работы с локальным сервером.
 
 * Склонируйте репозиторий: 
+
 ```
 git clone https://github.com/tatarenkov-r-v/foodgram-project-react.git
 ```
