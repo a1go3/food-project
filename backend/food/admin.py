@@ -24,7 +24,10 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipiesAdmin(admin.ModelAdmin):
-    list_display = ('author', 'image', 'name', 'text', 'cooking_time')
+    list_display = (
+        'name', 'text', 'cooking_time', 'author', 'image',
+        'added_in_favorites')
+    readonly_fields = ('added_in_favorites',)
     list_filter = ('name', 'author', 'tags')
     inlines = [
         MembershipInline
