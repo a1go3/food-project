@@ -22,7 +22,7 @@
 * Склонируйте репозиторий: 
 
 ```
-git clone https://github.com/tatarenkov-r-v/foodgram-project-react.git
+git clone https://github.com/tatarenkov-r-v/food-project.git
 ```
 * Cоберите образы foodgram_frontend, foodgram_backend 
 и foodgram_gateway (образ nginx с конфигом для управления проектом):
